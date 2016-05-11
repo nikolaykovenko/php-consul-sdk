@@ -17,7 +17,7 @@
   },
   "autoload": {
     "psr-4": {
-      "indigerd\\consul\\": "src/"
+      "indigerd\\consul\\": "src/consul"
     }
   }
 }
