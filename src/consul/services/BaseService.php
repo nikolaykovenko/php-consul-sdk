@@ -3,13 +3,13 @@
  * @author Alexander Stepanenko <alex.stepanenko@gmail.com>
  */
 
-namespace common\components\consul\services;
+namespace indigerd\consul\services;
 
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use common\components\consul\exceptions\ServerException;
-use common\components\consul\exceptions\ClientException;
+use indigerd\consul\exceptions\ServerException;
+use indigerd\consul\exceptions\ClientException;
 
 class BaseService
 {

@@ -3,11 +3,11 @@
  * @author Alexander Stepanenko <alex.stepanenko@gmail.com>
  */
 
-namespace common\components\consul\services;
+namespace indigerd\consul\services;
 
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
-use common\components\consul\models\Service;
+use indigerd\consul\models\Service;
 
 class ClientAwareService extends BaseService
 {

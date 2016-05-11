@@ -1,0 +1,23 @@
+
+{
+  "name": "indigerd/php-consul-sdk",
+  "description": "PHP Consul SDK.",
+  "keywords": ["consul", "microservice", "sdk", "heartbeat"],
+  "type": "sdk",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alexander Stepanenko",
+      "email": "alex.stepanenko@gmail.com"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": ">=4,<6",
+    "psr/log": "~1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "indigerd\\consul\\": "src/"
+    }
+  }
+}

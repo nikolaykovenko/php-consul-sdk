@@ -3,9 +3,9 @@
  * @author Alexander Stepanenko <alex.stepanenko@gmail.com>
  */
 
-namespace common\components\consul\services;
+namespace indigerd\consul\services;
 
-use common\components\consul\models\Check;
+use indigerd\consul\models\Check;
 
 class ServiceHeartBeat extends ClientAwareService implements ServiceHeartBeatInterface
 {

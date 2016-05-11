@@ -3,7 +3,7 @@
  * @author Alexander Stepanenko <alex.stepanenko@gmail.com>
  */
 
-namespace common\components\consul\services;
+namespace indigerd\consul\services;
 
 interface ServiceHeartBeatInterface
 {

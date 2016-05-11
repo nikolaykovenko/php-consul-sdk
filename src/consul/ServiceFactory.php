@@ -3,7 +3,7 @@
  * @author Alexander Stepanenko <alex.stepanenko@gmail.com>
  */
 
-namespace common\components\consul;
+namespace indigerd\consul;
 
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
@@ -11,10 +11,10 @@ use Psr\Log\LoggerInterface;
 class ServiceFactory
 {
     protected static $services = array(
-        'discovery' => 'common\components\consul\services\ServiceDiscovery',
-        'health'    => 'common\components\consul\services\ServiceHeartBeat',
-        'registry'  => 'common\components\consul\services\ServiceRegistry',
-        'kv'        => 'common\components\consul\services\ServiceKeyValue',
+        'discovery' => 'indigerd\consul\services\ServiceDiscovery',
+        'health'    => 'indigerd\consul\services\ServiceHeartBeat',
+        'registry'  => 'indigerd\consul\services\ServiceRegistry',
+        'kv'        => 'indigerd\consul\services\ServiceKeyValue',
     );
 
     /** @var Client  */
