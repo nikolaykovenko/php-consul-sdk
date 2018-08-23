@@ -17,33 +17,6 @@ class KeyValue
      */
     protected $value;
 
-    /**
-     * @var string[]
-     */
-    protected $flags;
-
-    /**
-     * @var int
-     */
-    protected $createIndex;
-
-    /**
-     * @var int
-     */
-    protected $modifyIndex;
-
-    public static function fromJson($json)
-    {
-        $data = json_decode($json, true);
-        $keyValue = new self();
-        $keyValue->createIndex = $data[0]['CreateIndex'];
-        $keyValue->modifyIndex = $data[0]['ModifyIndex'];
-        $keyValue->key = $data[0]['Key'];
-        $keyValue->flags = $data[0]['Flags'];
-        $keyValue->value = base64_decode($data[0]['Value']);
-        return $keyValue;
-    }
-
     public function getKey()
     {
         return $this->key;

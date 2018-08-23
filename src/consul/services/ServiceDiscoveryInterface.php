@@ -7,6 +7,6 @@ namespace indigerd\consul\services;
 
 interface ServiceDiscoveryInterface
 {
-    public function getServiceAddress($serviceName, $version = null);
-    public function getServiceAddresses($serviceName, $version = null);
+    public function getServiceAddress(string $serviceName, string $version = null);
+    public function getServiceAddresses(string $serviceName, string $version = null);
 }

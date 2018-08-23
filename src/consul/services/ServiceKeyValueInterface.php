@@ -5,9 +5,11 @@
 
 namespace indigerd\consul\services;
 
+use indigerd\consul\models\KeyValue;
+
 interface ServiceKeyValueInterface
 {
-    public function getValue($key);
-    public function setValue($key, $value);
-    public function deleteValue($key);
+    public function getKeyValue(string $key) : KeyValue;
+    public function setKeyValue(KeyValue $keyValue);
+    public function deleteKeyValue(KeyValue $keyValue, bool $recurse);
 }

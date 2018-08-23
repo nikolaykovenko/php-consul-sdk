@@ -9,26 +9,31 @@ use indigerd\consul\models\KeyValue;
 
 class ServiceKeyValue extends BaseService implements ServiceKeyValueInterface
 {
-    public function getValue($key)
+    public function getKeyValue(string $key) : KeyValue
     {
-        $data = $this->request('get', '/v1/kv/'.$key, [], false);
-        if ($data) {
-            return KeyValue::fromJson($data)->getValue();
+        $data = $this->request('get', '/v1/kv/' . $key, [], false);
+        if (!$data) {
+            return null;
         }
+        $data = json_decode($data, true);
+        $keyValue = new KeyValue;
+        $keyValue->setKey($data[0]['Key']);
+        $keyValue->setValue(base64_decode($data[0]['Value']));
+        return $keyValue;
     }
 
-    public function setValue($key, $value)
+    public function setKeyValue(KeyValue $keyValue)
     {
-        $params['body'] = $value;
-        return $this->put('/v1/kv/'.$key, $params);
+        $params['body'] = $keyValue->getValue();
+        return $this->put('/v1/kv/' . $keyValue->getKey(), $params);
     }
 
-    public function deleteValue($key, $recurse = false)
+    public function deleteKeyValue(KeyValue $keyValue, bool $recurse = false)
     {
         $params = [];
         if ($recurse) {
             $params['query'] = ['recurse' => true];
         }
-        return $this->delete('/v1/kv/'.$key, $params);
+        return $this->delete('/v1/kv/' . $keyValue->getKey(), $params);
     }
 }

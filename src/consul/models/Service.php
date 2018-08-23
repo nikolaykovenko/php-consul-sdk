@@ -18,6 +18,11 @@ class Service
     protected $id;
 
     /**
+     * @var string
+     */
+    protected $address;
+
+    /**
      * @var int
      */
     protected $port;
@@ -61,6 +66,22 @@ class Service
     {
         $this->id = $id;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress(string $address)
+    {
+        $this->address = $address;
     }
 
     /**

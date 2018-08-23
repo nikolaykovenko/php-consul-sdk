@@ -7,10 +7,11 @@ namespace indigerd\consul;
 
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
+use indigerd\consul\services\BaseService;
 
 class ServiceFactory
 {
-    protected static $services = array(
+    protected $services = array(
         'discovery' => 'indigerd\consul\services\ServiceDiscovery',
         'health'    => 'indigerd\consul\services\ServiceHeartBeat',
         'registry'  => 'indigerd\consul\services\ServiceRegistry',
@@ -18,29 +19,31 @@ class ServiceFactory
     );
 
     /** @var Client  */
-    private $client;
+    protected $client;
 
     /** @var LoggerInterface  */
-    private $logger;
+    protected $logger;
 
-    private $consulAddress;
+    protected $consulAddress;
 
     public function __construct(
         Client $client = null,
         LoggerInterface $logger = null,
-        $consulAddress = null
+        string $consulAddress = null,
+        array $services = []
     ) {
         $this->client = $client;
         $this->logger = $logger;
         $this->consulAddress = $consulAddress;
+        $this->services = array_merge($this->services, $services);
     }
 
-    public function get($service, $params = [])
+    public function get(string $service, array $params = []) : BaseService
     {
-        if (!array_key_exists($service, static::$services)) {
+        if (!array_key_exists($service, $this->services)) {
             throw new \InvalidArgumentException(sprintf('The service "%s" is not available.', $service));
         }
-        $class = static::$services[$service];
+        $class = $this->services[$service];
         $args = [$this->client, $this->logger, $this->consulAddress];
         foreach ($params as $param) {
             $args[] = $param;

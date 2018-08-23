@@ -13,10 +13,11 @@ class ServiceRegistry extends BaseService implements ServiceRegistryInterface
     {
         $url = '/v1/agent/service/register';
         $params['body'] = json_encode([
-            'Name' => $service->getName(),
-            'ID'   => $service->getId(),
-            'Port' => $service->getPort(),
-            'Tags' => $service->getTags(),
+            'Name'    => $service->getName(),
+            'ID'      => $service->getId(),
+            'Address' => $service->getAddress(),
+            'Port'    => $service->getPort(),
+            'Tags'    => $service->getTags(),
         ]);
         return $this->put($url, $params);
     }

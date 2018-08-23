@@ -6,14 +6,15 @@
 namespace indigerd\consul\services;
 
 use indigerd\consul\models\Check;
+use indigerd\consul\models\Service;
 
-class ServiceHeartBeat extends ClientAwareService implements ServiceHeartBeatInterface
+class ServiceHeartBeat extends BaseService implements ServiceHeartBeatInterface
 {
-    protected $healthCheks = [];
+    protected $healthChecks = [];
 
-    public function getRegisteredChecks()
+    public function getRegisteredChecks(Service $service) : array
     {
-        $url    = "/v1/health/service/" . $this->service->getName();
+        $url    = "/v1/health/service/" . $service->getName();
         $data   = $this->get($url);
         $checks = [];
         foreach ($data['Checks'] as $check) {
@@ -24,55 +25,52 @@ class ServiceHeartBeat extends ClientAwareService implements ServiceHeartBeatInt
                 ->setNotes($check['Notes'])
                 ->setOutput($check['Output'])
             ;
-
         }
         return $checks;
     }
 
-    public function send()
+    public function passCheck(Check $check)
     {
-        $url = "/v1/agent/check/pass/$this->id";
-        return $this->get($url);
+        $url = "/v1/agent/check/pass/$check->getId()";
+        return $this->put($url);
     }
 
-    public function respond()
+    public function failCheck(Check $check)
+    {
+        $url = "/v1/agent/check/fail/$check->getId()";
+        return $this->put($url);
+    }
+
+    public function run(Service $service) : bool
     {
         try {
-            $health = $this->doHealthChecks();
-            if (!$health) {
-                throw  new \Exception;
+            foreach ($this->healthChecks as $healthChek) {
+                $result = call_user_func($healthChek);
+                if (!$result) {
+                    throw new \RuntimeException('Healthcheck failed');
+                }
             }
-            $this->logger->info('Health check passed for service:' . $this->service->getName());
+            $this->logger->info('Health check passed for service:' . $service->getName());
+            $health = true;
         } catch (\Exception $e) {
-            $this->logger->warning('Health check failed for service:' . $this->service->getName());
+            $this->logger->warning('Health check failed for service:' . $service->getName());
             $health = false;
         }
         return $health;
     }
 
-    public function addHealthCheck($healthCheck)
+    public function addHealthCheck(callable $healthCheck) : ServiceHeartBeat
     {
-        if (!is_callable($healthCheck)) {
-            throw new \InvalidArgumentException('Health check must be callable');
-        }
-        $this->healthCheks[] = $healthCheck;
+        $this->healthChecks[] = $healthCheck;
+        return $this;
     }
 
-    public function setHealtChecks(array $healtChecks)
+    public function setHealthChecks(array $healthChecks) : ServiceHeartBeat
     {
         $this->healthChecks = [];
-        foreach ($healtChecks as $healthCheck) {
+        foreach ($healthChecks as $healthCheck) {
             $this->addHealthCheck($healthCheck);
         }
-    }
-
-    protected function doHealthChecks()
-    {
-        foreach ($this->healthCheks as $healthChek) {
-            if (!call_user_func($healthChek)) {
-                return false;
-            }
-        }
-        return true;
+        return $this;
     }
 }
