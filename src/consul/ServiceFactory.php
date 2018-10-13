@@ -26,16 +26,23 @@ class ServiceFactory
 
     protected $consulAddress;
 
+    /**
+     * @var string
+     */
+    protected $consulAuthToken;
+
     public function __construct(
         Client $client = null,
         LoggerInterface $logger = null,
         string $consulAddress = null,
-        array $services = []
+        array $services = [],
+        string $consulAuthToken = null
     ) {
         $this->client = $client;
         $this->logger = $logger;
         $this->consulAddress = $consulAddress;
         $this->services = array_merge($this->services, $services);
+        $this->consulAuthToken = $consulAuthToken;
     }
 
     public function get(string $service, array $params = []) : BaseService
@@ -44,7 +51,7 @@ class ServiceFactory
             throw new \InvalidArgumentException(sprintf('The service "%s" is not available.', $service));
         }
         $class = $this->services[$service];
-        $args = [$this->client, $this->logger, $this->consulAddress];
+        $args = [$this->client, $this->logger, $this->consulAddress, $this->consulAuthToken];
         foreach ($params as $param) {
             $args[] = $param;
         }
