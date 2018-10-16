@@ -21,6 +21,8 @@ class BaseService
 
     protected $consulAddress;
 
+    private $headers = [];
+
     public function __construct(
         Client $client = null,
         LoggerInterface $logger = null,
@@ -29,6 +31,12 @@ class BaseService
         $this->client = $client ?: new Client();
         $this->logger = $logger ?: new NullLogger();
         $this->consulAddress = $consulAddress ?: 'http://127.0.0.1:8500';
+    }
+
+    public function addHeader(string $header, string $value)
+    {
+        $this->headers[$header] = $value;
+        return $this;
     }
 
     protected function get($url, $params = [])
@@ -48,6 +56,8 @@ class BaseService
     protected function request($method, $url, $params, $decode = true)
     {
         $url = $this->consulAddress . $url;
+        $params['headers'] = $this->headers;
+
         try {
             /** @var \Psr\Http\Message\ResponseInterface $consulRequest */
             $consulRequest = $this->client->{$method}($url, $params);
@@ -68,6 +78,7 @@ class BaseService
             throw new ClientException($message);
         }
 
+        $this->headers = [];
         $data = $consulRequest->getBody();
         if ($decode) {
             $data = json_decode($consulRequest->getBody());

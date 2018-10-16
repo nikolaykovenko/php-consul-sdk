@@ -9,7 +9,14 @@ use indigerd\consul\models\KeyValue;
 
 interface ServiceKeyValueInterface
 {
-    public function getKeyValue(string $key, $token = null) : KeyValue;
-    public function setKeyValue(KeyValue $keyValue, $token = null);
-    public function deleteKeyValue(KeyValue $keyValue, bool $recurse, $token = null);
+    public function getKeyValue(string $key) : KeyValue;
+    public function setKeyValue(KeyValue $keyValue);
+    public function deleteKeyValue(KeyValue $keyValue, bool $recurse);
+
+    /**
+     * Adds consul auth token to request headers
+     * @param string $token
+     * @return $this
+     */
+    public function addToken(string $token);
 }

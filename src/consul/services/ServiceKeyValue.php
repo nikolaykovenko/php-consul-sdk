@@ -9,14 +9,9 @@ use indigerd\consul\models\KeyValue;
 
 class ServiceKeyValue extends BaseService implements ServiceKeyValueInterface
 {
-    public function getKeyValue(string $key, $token = null) : KeyValue
+    public function getKeyValue(string $key) : KeyValue
     {
-        $params = [];
-        if ($token) {
-             $params = $this->addTokenHeader($token, $params);
-        }
-
-        $data = $this->request('get', '/v1/kv/' . $key, $params, false);
+        $data = $this->request('get', '/v1/kv/' . $key, [], false);
         if (!$data) {
             return null;
         }
@@ -27,38 +22,23 @@ class ServiceKeyValue extends BaseService implements ServiceKeyValueInterface
         return $keyValue;
     }
 
-    public function setKeyValue(KeyValue $keyValue, $token = null)
+    public function setKeyValue(KeyValue $keyValue)
     {
         $params['body'] = $keyValue->getValue();
-        if ($token) {
-            $params = $this->addTokenHeader($token, $params);
-        }
-
         return $this->put('/v1/kv/' . $keyValue->getKey(), $params);
     }
 
-    public function deleteKeyValue(KeyValue $keyValue, bool $recurse = false, $token = null)
+    public function deleteKeyValue(KeyValue $keyValue, bool $recurse = false)
     {
         $params = [];
         if ($recurse) {
             $params['query'] = ['recurse' => true];
         }
-        if ($token) {
-            $params = $this->addTokenHeader($token, $params);
-        }
-
         return $this->delete('/v1/kv/' . $keyValue->getKey(), $params);
     }
 
-    /**
-     * Adds consul auth token to request headers
-     * @param string|null $token
-     * @param array $params
-     * @return array
-     */
-    private function addTokenHeader($token, array $params)
+    public function addToken(string $token)
     {
-        $params['headers']['X-Consul-Token'] = $token;
-        return $params;
+        return $this->addHeader('X-Consul-Token', $token);
     }
 }
