@@ -21,6 +21,8 @@ class BaseService
 
     protected $consulAddress;
 
+    protected $headers = [];
+
     public function __construct(
         Client $client = null,
         LoggerInterface $logger = null,
@@ -29,6 +31,17 @@ class BaseService
         $this->client = $client ?: new Client();
         $this->logger = $logger ?: new NullLogger();
         $this->consulAddress = $consulAddress ?: 'http://127.0.0.1:8500';
+    }
+
+    public function addHeader(string $header, string $value)
+    {
+        $this->headers[$header] = $value;
+        return $this;
+    }
+
+    public function addToken(string $token)
+    {
+        return $this->addHeader('X-Consul-Token', $token);
     }
 
     protected function get($url, $params = [])
@@ -48,6 +61,8 @@ class BaseService
     protected function request($method, $url, $params, $decode = true)
     {
         $url = $this->consulAddress . $url;
+        $params['headers'] = $this->headers;
+
         try {
             /** @var \Psr\Http\Message\ResponseInterface $consulRequest */
             $consulRequest = $this->client->{$method}($url, $params);
@@ -55,6 +70,8 @@ class BaseService
             $message = sprintf('Failed to to perform request to consul (%s).', $e->getMessage());
             $this->logger->error($message);
             throw new ServerException($message);
+        } finally {
+            $this->headers = [];
         }
 
         $this->logger->debug(sprintf("Response:\n%s", $consulRequest->getBody()));
