@@ -21,7 +21,7 @@ class BaseService
 
     protected $consulAddress;
 
-    private $headers = [];
+    protected $headers = [];
 
     public function __construct(
         Client $client = null,
