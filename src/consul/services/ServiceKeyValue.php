@@ -36,9 +36,4 @@ class ServiceKeyValue extends BaseService implements ServiceKeyValueInterface
         }
         return $this->delete('/v1/kv/' . $keyValue->getKey(), $params);
     }
-
-    public function addToken(string $token)
-    {
-        return $this->addHeader('X-Consul-Token', $token);
-    }
 }

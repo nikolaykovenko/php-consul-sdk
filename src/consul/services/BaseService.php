@@ -39,6 +39,11 @@ class BaseService
         return $this;
     }
 
+    public function addToken(string $token)
+    {
+        return $this->addHeader('X-Consul-Token', $token);
+    }
+
     protected function get($url, $params = [])
     {
         return $this->request('get', $url, $params);
@@ -65,6 +70,8 @@ class BaseService
             $message = sprintf('Failed to to perform request to consul (%s).', $e->getMessage());
             $this->logger->error($message);
             throw new ServerException($message);
+        } finally {
+            $this->headers = [];
         }
 
         $this->logger->debug(sprintf("Response:\n%s", $consulRequest->getBody()));
@@ -78,7 +85,6 @@ class BaseService
             throw new ClientException($message);
         }
 
-        $this->headers = [];
         $data = $consulRequest->getBody();
         if ($decode) {
             $data = json_decode($consulRequest->getBody());
