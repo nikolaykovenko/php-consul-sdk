@@ -11,7 +11,12 @@ class ServiceKeyValue extends BaseService implements ServiceKeyValueInterface
 {
     public function getKeyValue(string $key, $token = null) : KeyValue
     {
-        $data = $this->request('get', '/v1/kv/' . $key, $this->addTokenHeader($token), false);
+        $params = [];
+        if ($token) {
+             $params = $this->addTokenHeader($token, $params);
+        }
+
+        $data = $this->request('get', '/v1/kv/' . $key, $params, false);
         if (!$data) {
             return null;
         }
@@ -25,7 +30,11 @@ class ServiceKeyValue extends BaseService implements ServiceKeyValueInterface
     public function setKeyValue(KeyValue $keyValue, $token = null)
     {
         $params['body'] = $keyValue->getValue();
-        return $this->put('/v1/kv/' . $keyValue->getKey(), $this->addTokenHeader($token, $params));
+        if ($token) {
+            $params = $this->addTokenHeader($token, $params);
+        }
+
+        return $this->put('/v1/kv/' . $keyValue->getKey(), $params);
     }
 
     public function deleteKeyValue(KeyValue $keyValue, bool $recurse = false, $token = null)
@@ -34,7 +43,11 @@ class ServiceKeyValue extends BaseService implements ServiceKeyValueInterface
         if ($recurse) {
             $params['query'] = ['recurse' => true];
         }
-        return $this->delete('/v1/kv/' . $keyValue->getKey(), $this->addTokenHeader($token, $params));
+        if ($token) {
+            $params = $this->addTokenHeader($token, $params);
+        }
+
+        return $this->delete('/v1/kv/' . $keyValue->getKey(), $params);
     }
 
     /**
@@ -43,12 +56,9 @@ class ServiceKeyValue extends BaseService implements ServiceKeyValueInterface
      * @param array $params
      * @return array
      */
-    private function addTokenHeader($token, array $params = [])
+    private function addTokenHeader($token, array $params)
     {
-        if ($token && empty($params['headers']['X-Consul-Token'])) {
-            $params['headers']['X-Consul-Token'] = $token;
-        }
-
+        $params['headers']['X-Consul-Token'] = $token;
         return $params;
     }
 }
