@@ -24,8 +24,7 @@ class BaseService
     public function __construct(
         Client $client = null,
         LoggerInterface $logger = null,
-        $consulAddress = null,
-        $authToken = null
+        $consulAddress = null
     ) {
         $this->client = $client ?: new Client();
         $this->logger = $logger ?: new NullLogger();
