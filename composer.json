@@ -1,5 +1,5 @@
 {
-  "name": "indigerd/php-consul-sdk",
+  "name": "nikolaykovenko/php-consul-sdk",
   "description": "PHP Consul SDK.",
   "keywords": ["consul", "microservice", "sdk", "heartbeat"],
   "type": "sdk",
